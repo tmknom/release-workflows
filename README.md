@@ -1,14 +1,14 @@
-# template-reusable-workflows
+# release-workflows
 
-Template repository for Reusable Workflows.
+A collection of release workflows.
 
 ## Description
 
-Template repository for creating Reusable Workflows with GitHub Actions.
+A collection of release workflows implemented as Reusable Workflows for GitHub Actions.
 
 ## Release notes
 
-See [Releases](https://github.com/tmknom/template-reusable-workflows/releases).
+See [Releases](https://github.com/tmknom/release-workflows/releases).
 
 ## License
 
