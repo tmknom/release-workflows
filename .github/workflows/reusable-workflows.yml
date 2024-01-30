@@ -1,16 +1,11 @@
 name: Release Reusable Workflows
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       level:
-        type: choice
+        type: string
         required: true
         description: Bump up to [patch / minor / major]
-        options:
-          - patch
-          - minor
-          - major
-        default: minor
 
 concurrency: ${{ github.workflow }}
 
