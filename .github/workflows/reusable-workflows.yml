@@ -75,6 +75,23 @@ jobs:
           git push --force origin "${VERSION}"
           git push --force origin "${major}"
 
+      - name: Generate configuration
+        run: |
+          set -x
+          cat <<EOF >".github/release.yml"
+          changelog:
+            categories:
+              - title: Exciting New Features 🎉
+                labels:
+                  - enhancement
+              - title: Bug Fixes 🛠
+                labels:
+                  - bug
+              - title: Bump Dependencies 🔥
+                labels:
+                  - dependencies
+          EOF
+
       - name: Release
         env:
           GITHUB_TOKEN: ${{ github.token }}
