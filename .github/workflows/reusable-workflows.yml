@@ -7,8 +7,6 @@ on:
         required: true
         description: Bump up to [patch / minor / major]
 
-concurrency: ${{ github.workflow }}
-
 permissions: {}
 
 defaults:
