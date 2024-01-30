@@ -6,6 +6,20 @@ A collection of release workflows.
 
 A collection of release workflows implemented as Reusable Workflows for GitHub Actions.
 
+## Usage
+
+### Reusable Workflows
+
+```yaml
+jobs:
+  call:
+    uses: tmknom/release-workflows/.github/workflows/reusable-workflows.yml@v0
+    with:
+      level: ${{ inputs.level }}
+    permissions:
+      contents: write
+```
+
 ## Release notes
 
 See [Releases](https://github.com/tmknom/release-workflows/releases).
