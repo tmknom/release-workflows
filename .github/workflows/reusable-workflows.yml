@@ -72,6 +72,17 @@ jobs:
             echo "initial-version=${INITIAL_VERSION}"
           } >> "${GITHUB_OUTPUT}"
 
+      - name: Push version tag
+        env:
+          VERSION: ${{ steps.bump.outputs.version }}
+        run: |
+          set -x
+          major="${VERSION%%.*}"
+          git tag --force --message "${VERSION}" "${VERSION}"
+          git tag --force --message "${VERSION}" "${major}"
+          git push --force origin "${VERSION}"
+          git push --force origin "${major}"
+
       - name: Generate unique identifier
         id: unique
         run: |
@@ -151,17 +162,6 @@ jobs:
         run: |
           set -x
           cat "${NOTE_PATH}"
-
-      - name: Push version tag
-        env:
-          VERSION: ${{ steps.bump.outputs.version }}
-        run: |
-          set -x
-          major="${VERSION%%.*}"
-          git tag --force --message "${VERSION}" "${VERSION}"
-          git tag --force --message "${VERSION}" "${major}"
-          git push --force origin "${VERSION}"
-          git push --force origin "${major}"
 
       - name: Release
         env:
