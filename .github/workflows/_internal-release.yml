@@ -18,7 +18,7 @@ permissions: {}
 
 jobs:
   call:
-    uses: ./.github/workflows/reusable-workflows.yml
+    uses: ./.github/workflows/github-releases.yml
     with:
       level: ${{ inputs.level }}
     permissions:
