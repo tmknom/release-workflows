@@ -22,8 +22,10 @@ jobs:
 
 ## Release notes
 
-See [Releases](https://github.com/tmknom/release-workflows/releases).
+See [GitHub Releases][releases].
 
 ## License
 
-Apache 2 Licensed. See [LICENSE](/LICENSE) for full details.
+Apache 2 Licensed. See [LICENSE](LICENSE) for full details.
+
+[releases]: https://github.com/tmknom/release-workflows/releases
