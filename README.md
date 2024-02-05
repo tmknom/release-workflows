@@ -1,6 +1,6 @@
 # release-workflows
 
-A collection of release workflows.
+Collection of release workflows.
 
 ## Description
 
