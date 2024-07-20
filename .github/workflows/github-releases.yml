@@ -37,6 +37,7 @@ jobs:
         uses: tmknom/push-version-tag-action@a9d1b46f9c29d3db510771452257b228bfd8a33f # v0.1.1
         with:
           version: ${{ steps.bump.outputs.version }}
+          major: true
 
       - name: Release
         env:
