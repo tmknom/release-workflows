@@ -4,7 +4,7 @@ on:
     inputs:
       bump-level:
         type: string
-        required: false
+        required: true
         description: Determines which part of the version to increment [patch/minor/major]
       level:
         type: string
