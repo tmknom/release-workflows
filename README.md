@@ -5,7 +5,7 @@ Collection of release workflows.
 ## Description
 
 A collection of release workflows implemented as Reusable Workflows for GitHub Actions.
-It provides for the following workflows:
+It provides the following workflows:
 
 - **GitHub Releases**: Releases artifacts to GitHub Releases for simple projects.
 - **Go**: Releases Go-based CLI tools using [GoReleaser][GoReleaser].
