@@ -48,6 +48,30 @@ jobs:
       contents: write
 ```
 
+<!-- actdocs start -->
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+| :--- | :---------- | :--- | :------ | :------: |
+| bump-level | Determines which part of the version to increment [patch/minor/major] | `string` | n/a | yes |
+
+## Secrets
+
+N/A
+
+## Outputs
+
+N/A
+
+## Permissions
+
+| Scope    | Access |
+| :------- | :----- |
+| contents | write  |
+
+<!-- actdocs end -->
+
 ## Related projects
 
 N/A
