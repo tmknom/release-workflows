@@ -55,6 +55,34 @@ jobs:
       attestations: write
 ```
 
+<!-- actdocs start -->
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+| :--- | :---------- | :--- | :------ | :------: |
+| bump-level | Determines which part of the version to increment [patch/minor/major] | `string` | n/a | yes |
+| go-version-file | Path to the version file for Go, such as .go-version, go.mod or go.work. | `string` | `go.mod` | no |
+
+## Secrets
+
+N/A
+
+## Outputs
+
+N/A
+
+## Permissions
+
+| Scope        | Access |
+| :----------- | :----- |
+| contents     | write  |
+| packages     | write  |
+| id-token     | write  |
+| attestations | write  |
+
+<!-- actdocs end -->
+
 ## Related projects
 
 - [GoReleaser][GoReleaser]: Builds Go binaries for several platforms.
