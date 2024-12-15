@@ -13,10 +13,11 @@ With built-in security features like keyless signing via [Cosign][Cosign], it si
 
 - **Automatic Versioning**: Updates version numbers (patch, minor, major) based on your input.
 - **Cross-Platform Builds**: Compiles binaries for Linux, Windows, macOS, and architectures like x86_64 and arm64.
-- **Container Image Publishing**: Publishes container images (amd64, arm64) to GitHub Container Registry.
-- **Keyless Signing**: Signs binaries and container images using [Cosign][Cosign].
-- **Artifact Attestation**: Provides cryptographically signed attestations for binaries and container images.
-- **GitHub Releases Integration**: Creates Git tags, uploads binaries, and generates release notes to GitHub Releases.
+- **Container Image Publishing**: Publishes multi-architecture container images (amd64, arm64) to GitHub Container Registry.
+- **Reproducible Builds**: Ensures consistent outputs across builds by enforcing reproducibility standards such as `SOURCE_DATE_EPOCH` and Go's `-trimpath` flag.
+- **Keyless Signing**: Signs binaries, container images, and checksum files using [Cosign][Cosign].
+- **Artifact Attestation**: Generates cryptographically signed provenance and SBOMs (Software Bill of Materials).
+- **GitHub Releases Integration**: Creates Git tags, uploads artifacts, and generates release notes to GitHub Releases.
 
 ## Benefits
 
