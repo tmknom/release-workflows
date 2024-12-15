@@ -5,8 +5,9 @@ Releases Go-based CLI tools using GoReleaser.
 ## Description
 
 This reusable workflow automates the release process for Go-based CLI tools using [GoReleaser][GoReleaser].
-It handles versioning, building, signing, and publishing artifacts such as binaries and container images.
+It handles versioning, building, signing, and publishing artifacts such as binaries, container images, and provenance data.
 It automates the entire release process, ensuring secure, consistent, and efficient releases.
+With built-in security features like keyless signing via [Cosign][Cosign], it simplifies compliance with modern software supply chain standards.
 
 ### Key Features
 
