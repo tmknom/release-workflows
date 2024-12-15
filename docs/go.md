@@ -25,6 +25,7 @@ With built-in security features like keyless signing via [Cosign][Cosign], it si
 - **Broad Platform Compatibility**: Builds for multiple OSs and architectures, increasing accessibility and reach.
 - **Enhanced Security**: Signs artifacts to ensure their authenticity and integrity.
 - **Auditable Build Process**: Provides cryptographic proofs for all artifacts, guarantee compliance and traceability.
+- **Streamlined Homebrew Support**: Automatically updates Homebrew formulae, making it easier for macOS users to install and update your software.
 - **Effortless Release Management**: Adapts seamlessly to Go projects, enabling efficient and standardized workflows across repositories.
 
 ## Usage
