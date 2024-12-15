@@ -10,12 +10,14 @@ It provides the following workflows:
 - **GitHub Releases**: Releases artifacts to GitHub Releases for simple projects.
 - **Go**: Releases Go-based CLI tools using [GoReleaser][GoReleaser].
 
+These workflows automate the entire release process, ensuring secure, consistent, and efficient releases.
+
 ## Usage
 
 ### GitHub Releases
 
 This reusable workflow automates release processes that do not require build steps, such as compilation.
-It handles version updates, tag creation, and artifact publishing to GitHub Releases, ensuring secure, consistent, and efficient releases.
+It handles version updates, tag creation, and artifact publishing to GitHub Releases.
 
 ```yaml
 jobs:
