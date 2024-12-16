@@ -11,6 +11,21 @@ on:
         default: go.mod
         required: false
         description: Path to the version file for Go, such as .go-version, go.mod or go.work.
+      homebrew-tap-repository:
+        type: string
+        required: false
+        description: The repository for Homebrew formulae used to install tools on macOS.
+      app-private-key-fingerprint:
+        type: string
+        required: false
+        description: The fingerprint of the private key for GitHub Apps.
+    secrets:
+      app-id:
+        required: false
+        description: GitHub Apps ID
+      app-private-key:
+        required: false
+        description: Private key for GitHub Apps
 
 permissions: {}
 
@@ -30,6 +45,7 @@ jobs:
     outputs:
       version: ${{ steps.bump.outputs.version }}
       checksum-hashes: ${{ steps.metadata.outputs.checksum-hashes }}
+      manifest-digest: ${{ steps.metadata.outputs.manifest-digest }}
     steps:
       - name: Check actor access
         if: ${{ github.repository_owner != github.actor }}
@@ -58,7 +74,7 @@ jobs:
         uses: sigstore/cosign-installer@dc72c7d5c4d10cd6bcb8cf6e3fd625a9e5e537da # v3.7.0
 
       - name: Install Syft
-        uses: anchore/sbom-action/download-syft@df80a981bc6edbc4e220a492d3cbe9f5547a6e75 # v0.17.6
+        uses: anchore/sbom-action/download-syft@df80a981bc6edbc4e220a492d3cbe9f5547a6e75 # v0.17.9
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
@@ -66,6 +82,21 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ github.token }}
+
+      - name: Log private key's fingerprint
+        if: ${{ inputs.app-private-key-fingerprint != '' }}
+        env:
+          FINGERPRINT: ${{ inputs.app-private-key-fingerprint }}
+        run: |
+          echo "fingerprint=${FINGERPRINT}"
+
+      - name: Create GitHub App token
+        id: app
+        uses: actions/create-github-app-token@5d869da34e18e7287c1daad50e0b8ea0f506ce69 # v1.11.0
+        with:
+          app-id: ${{ secrets.app-id }}
+          private-key: ${{ secrets.app-private-key }}
+          repositories: homebrew-tap, homebrew-test-tap
 
       - name: Run GoReleaser
         id: goreleaser
@@ -76,6 +107,8 @@ jobs:
           args: release --clean --verbose
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          HOMEBREW_TAP_REPOSITORY: ${{ inputs.homebrew-tap-repository }}
+          HOMEBREW_TAP_GITHUB_TOKEN: ${{ steps.app.outputs.token }}
 
       - name: Attest binaries
         uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
@@ -88,12 +121,12 @@ jobs:
           ARTIFACTS: ${{ steps.goreleaser.outputs.artifacts }}
         run: |
           set -x
-          manifest_digest="$(jq -r '. | map(select(.type=="Docker Manifest"))[0] | .extra.Digest' <<<"${ARTIFACTS}")"
-          echo "manifest-digest=${manifest_digest}" >> "${GITHUB_OUTPUT}"
-
           checksum_file="$(jq -r '.[] | select (.type=="Checksum") | .path' <<<"${ARTIFACTS}")"
           checksum_hashes="$(base64 -w0 "${checksum_file}")"
           echo "checksum-hashes=${checksum_hashes}" >> "${GITHUB_OUTPUT}"
+
+          manifest_digest="$(jq -r '. | map(select(.type=="Docker Manifest"))[0] | .extra.Digest' <<<"${ARTIFACTS}")"
+          echo "manifest-digest=${manifest_digest}" >> "${GITHUB_OUTPUT}"
 
       - name: Attest container images
         uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
@@ -102,7 +135,7 @@ jobs:
           subject-digest: ${{ steps.metadata.outputs.manifest-digest }}
           push-to-registry: true
 
-  provenance:
+  binary-provenance:
     # Must be referenced by a tag. https://github.com/slsa-framework/slsa-github-generator/blob/main/internal/builders/container/README.md#referencing-the-slsa-generator
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
     with:
@@ -111,6 +144,21 @@ jobs:
       upload-assets: true
     permissions:
       contents: write
+      id-token: write
+      actions: read
+    needs: [release]
+
+  image-provenance:
+    # Must be refernced by a tag. https://github.com/slsa-framework/slsa-github-generator/blob/main/internal/builders/container/README.md#referencing-the-slsa-generator
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v2.0.0
+    with:
+      image: ghcr.io/${{ github.repository }}
+      digest: ${{ needs.release.outputs.manifest-digest }}
+      registry-username: ${{ github.actor }}
+    secrets:
+      registry-password: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      packages: write
       id-token: write
       actions: read
     needs: [release]
