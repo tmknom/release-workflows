@@ -43,7 +43,9 @@ jobs:
       id-token: write
       attestations: write
     outputs:
-      version: ${{ steps.bump.outputs.version }}
+      name: ${{ steps.metadata.outputs.name }}
+      version: ${{ steps.metadata.outputs.version }}
+      version-tag: ${{ steps.bump.outputs.version }}
       checksum-hashes: ${{ steps.metadata.outputs.checksum-hashes }}
       manifest-digest: ${{ steps.metadata.outputs.manifest-digest }}
     steps:
@@ -119,8 +121,15 @@ jobs:
         id: metadata
         env:
           ARTIFACTS: ${{ steps.goreleaser.outputs.artifacts }}
+          METADATA: ${{ steps.goreleaser.outputs.metadata }}
         run: |
           set -x
+          name="$(jq -r '.project_name' <<<"${METADATA}")"
+          echo "name=${name}" >> "${GITHUB_OUTPUT}"
+
+          version="$(jq -r '.version' <<<"${METADATA}")"
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+
           checksum_file="$(jq -r '.[] | select (.type=="Checksum") | .path' <<<"${ARTIFACTS}")"
           checksum_hashes="$(base64 -w0 "${checksum_file}")"
           echo "checksum-hashes=${checksum_hashes}" >> "${GITHUB_OUTPUT}"
@@ -135,13 +144,22 @@ jobs:
           subject-digest: ${{ steps.metadata.outputs.manifest-digest }}
           push-to-registry: true
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
   binary-provenance:
     # Must be referenced by a tag. https://github.com/slsa-framework/slsa-github-generator/blob/main/internal/builders/container/README.md#referencing-the-slsa-generator
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.0.0
     with:
+      provenance-name: ${{ needs.release.outputs.name }}_${{ needs.release.outputs.version }}.intoto.jsonl
       base64-subjects: ${{ needs.release.outputs.checksum-hashes }}
-      upload-tag-name: ${{ needs.release.outputs.version }}
+      upload-tag-name: ${{ needs.release.outputs.version-tag }}
       upload-assets: true
+      draft-release: true
     permissions:
       contents: write
       id-token: write
@@ -162,3 +180,21 @@ jobs:
       id-token: write
       actions: read
     needs: [release]
+
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [release, binary-provenance, image-provenance]
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: tmknom/checkout-action@v1
+
+      - name: Publish release
+        env:
+          VERSION_TAG: ${{ needs.release.outputs.version-tag }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -x
+          gh release edit "${VERSION_TAG}" --draft=false
