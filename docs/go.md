@@ -5,17 +5,19 @@ Releases Go-based CLI tools using GoReleaser.
 ## Description
 
 This reusable workflow automates the release process for Go-based CLI tools using [GoReleaser][GoReleaser].
-It handles versioning, building, signing, and publishing artifacts such as binaries and container images.
+It handles versioning, building, signing, and publishing artifacts such as binaries, container images, and provenance data.
 It automates the entire release process, ensuring secure, consistent, and efficient releases.
+With built-in security features like keyless signing via [Cosign][Cosign], it simplifies compliance with modern software supply chain standards.
 
 ### Key Features
 
 - **Automatic Versioning**: Updates version numbers (patch, minor, major) based on your input.
 - **Cross-Platform Builds**: Compiles binaries for Linux, Windows, macOS, and architectures like x86_64 and arm64.
-- **Container Image Publishing**: Publishes container images (amd64, arm64) to GitHub Container Registry.
-- **Keyless Signing**: Signs binaries and container images using [Cosign][Cosign].
-- **Artifact Attestation**: Provides cryptographically signed attestations for binaries and container images.
-- **GitHub Releases Integration**: Creates Git tags, uploads binaries, and generates release notes to GitHub Releases.
+- **Container Image Publishing**: Publishes multi-architecture container images (amd64, arm64) to GitHub Container Registry.
+- **Reproducible Builds**: Ensures consistent outputs across builds by enforcing reproducibility standards such as `SOURCE_DATE_EPOCH` and Go's `-trimpath` flag.
+- **Keyless Signing**: Signs binaries, container images, and checksum files using [Cosign][Cosign].
+- **Artifact Attestation**: Generates cryptographically signed provenance and SBOMs (Software Bill of Materials).
+- **GitHub Releases Integration**: Creates Git tags, uploads artifacts, and generates release notes to GitHub Releases.
 
 ## Benefits
 
@@ -23,6 +25,7 @@ It automates the entire release process, ensuring secure, consistent, and effici
 - **Broad Platform Compatibility**: Builds for multiple OSs and architectures, increasing accessibility and reach.
 - **Enhanced Security**: Signs artifacts to ensure their authenticity and integrity.
 - **Auditable Build Process**: Provides cryptographic proofs for all artifacts, guarantee compliance and traceability.
+- **Streamlined Homebrew Support**: Automatically updates Homebrew formulae, making it easier for macOS users to install and update your software.
 - **Effortless Release Management**: Adapts seamlessly to Go projects, enabling efficient and standardized workflows across repositories.
 
 ## Usage
