@@ -5,7 +5,7 @@ on:
       bump-level:
         type: string
         required: true
-        description: Determines which part of the version to increment [patch/minor/major]
+        description: Determines which part of the version to increment [auto/patch/minor/major]
 
 permissions: {}
 
@@ -22,12 +22,19 @@ jobs:
     steps:
       - name: Checkout
         uses: tmknom/checkout-action@v1
+        with:
+          fetch-depth: 100
+
+      - name: Determine Version Level
+        id: determine
+        if: ${{ inputs.bump-level == 'auto' }}
+        uses: tmknom/determine-version-level-action@1b9d61694b6707e10ff5a38a2acd1ad411078fab # v0.2.0
 
       - name: Bump Version
         id: bump
         uses: tmknom/bump-version-action@87bed7f224292cab5b46a4cae9897bbf64153f00 # v0.2.1
         with:
-          bump-level: ${{ inputs.bump-level }}
+          bump-level: ${{ steps.determine.outputs.bump-level || inputs.bump-level }}
 
       - name: Push Version Tag
         uses: tmknom/push-version-tag-action@a9d1b46f9c29d3db510771452257b228bfd8a33f # v0.1.1
