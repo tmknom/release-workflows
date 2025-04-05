@@ -5,7 +5,7 @@ on:
       bump-level:
         type: string
         required: true
-        description: Determines which part of the version to increment [patch/minor/major]
+        description: Determines which part of the version to increment [auto/patch/minor/major]
       go-version-file:
         type: string
         default: go.mod
@@ -59,17 +59,24 @@ jobs:
     steps:
       - name: Checkout
         uses: tmknom/checkout-action@v1
+        with:
+          fetch-depth: 100
 
       - name: Set up Go
         uses: actions/setup-go@0aaccfd150d50ccaeb58ebd88d36e91967a5f35b # v5.4.0
         with:
           go-version-file: ${{ inputs.go-version-file }}
 
+      - name: Determine Version Level
+        id: determine
+        if: ${{ inputs.bump-level == 'auto' }}
+        uses: tmknom/determine-version-level-action@83449961162020e90bb0cd55acb99cc695526221 # v0.2.1
+
       - name: Bump Version
         id: bump
         uses: tmknom/bump-version-action@87bed7f224292cab5b46a4cae9897bbf64153f00 # v0.2.1
         with:
-          bump-level: ${{ inputs.bump-level }}
+          bump-level: ${{ steps.determine.outputs.bump-level || inputs.bump-level }}
 
       - name: Push Version Tag
         uses: tmknom/push-version-tag-action@a9d1b46f9c29d3db510771452257b228bfd8a33f # v0.1.1
