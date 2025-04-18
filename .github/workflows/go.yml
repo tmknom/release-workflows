@@ -156,7 +156,7 @@ jobs:
           retention-days: 1
 
       - name: Generate footer of release note
-        uses: tmknom/generate-go-release-note-action@84ca771416be6135b4c2a7eb9f4dda5450c5c00d # v0.1.0
+        uses: tmknom/generate-go-release-note-action@9fc350d5a9eff8d8d26ef4202507a67190991755 # v0.1.1
         id: footer
         with:
           artifact-name: ${{ steps.artifact.outputs.name }}
