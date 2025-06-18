@@ -58,9 +58,10 @@ jobs:
       attestations: write
     steps:
       - name: Checkout
-        uses: tmknom/checkout-action@v1
+        uses: tmknom/secure-checkout-action@v1
         with:
           fetch-depth: 100
+          persist-credentials: true
 
       - name: Generate artifact name
         id: artifact
