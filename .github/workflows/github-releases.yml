@@ -21,9 +21,10 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: tmknom/checkout-action@v1
+        uses: tmknom/secure-checkout-action@v1
         with:
           fetch-depth: 100
+          persist-credentials: true
 
       - name: Determine Version Level
         id: determine
